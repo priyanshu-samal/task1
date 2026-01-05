@@ -40,9 +40,21 @@ async def update_deal(deal_id: int, deal_update: Deal, session: Session = Depend
         raise HTTPException(status_code=404, detail="Deal not found")
     
     # Track stage change
-    old_stage = deal_db.stage
+    display_stage = deal_db.stage
     
     deal_data = deal_update.dict(exclude_unset=True)
+
+    # Pre-Save Security Check
+    if "stage" in deal_data:
+        new_stage = deal_data["stage"]
+        # Restriction: Analysts cannot move to OR from Invested/Passed
+        if current_user.role == "analyst":
+             if new_stage in [DealStage.INVESTED, DealStage.PASSED] or display_stage in [DealStage.INVESTED, DealStage.PASSED]:
+                 raise HTTPException(
+                     status_code=403, 
+                     detail="Analysts cannot change deals in Invested or Passed stages. Only Partners can make this decision."
+                 )
+
     for key, value in deal_data.items():
         setattr(deal_db, key, value)
     
@@ -51,12 +63,13 @@ async def update_deal(deal_id: int, deal_update: Deal, session: Session = Depend
     session.commit()
     session.refresh(deal_db)
     
-    if "stage" in deal_data and old_stage != deal_db.stage:
+    if "stage" in deal_data and display_stage != deal_db.stage:
+
         activity = Activity(
              deal_id=deal_db.id,
              user_id=current_user.id,
              type="stage_change",
-             description=f"Moved from {old_stage} to {deal_db.stage}"
+             description=f"Moved from {display_stage} to {deal_db.stage}"
         )
         session.add(activity)
         session.commit()

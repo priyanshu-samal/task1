@@ -1,8 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { getDeal, getActivities } from '../api';
 import MemoEditor from '../components/MemoEditor';
 import { format } from 'date-fns';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 
 const DealDetail = () => {
     const { id } = useParams<{ id: string }>();
@@ -17,6 +19,16 @@ const DealDetail = () => {
     const { data: activities } = useQuery({
         queryKey: ['activities', dealId],
         queryFn: () => getActivities(dealId)
+    });
+
+    const { user } = useAuth();
+    const deleteMutation = useMutation({
+        mutationFn: () => axios.delete(`http://localhost:8000/deals/${dealId}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        }),
+        onSuccess: () => {
+            navigate('/');
+        }
     });
 
     if (loadingDeal) return <div>Loading...</div>;
@@ -42,10 +54,22 @@ const DealDetail = () => {
                             <span>Stage: {deal.stage}</span>
                         </div>
                     </div>
-                    <div className="flex flex-col items-end">
+                    <div className="flex flex-col items-end gap-2">
                         <span className={`px-3 py-1 rounded-full text-sm font-medium ${deal.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
                             {deal.status.toUpperCase()}
                         </span>
+                        {user?.role === 'admin' && (
+                            <button
+                                onClick={() => {
+                                    if (window.confirm('Are you sure you want to delete this deal?')) {
+                                        deleteMutation.mutate();
+                                    }
+                                }}
+                                className="text-sm text-red-500 hover:text-red-700 font-medium hover:underline"
+                            >
+                                Delete Deal
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
