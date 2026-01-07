@@ -13,16 +13,16 @@ def seed():
             return
 
         users = [
-            User(email="admin@example.com", hashed_password=get_password_hash("password"), role=UserRole.ADMIN),
-            User(email="analyst@example.com", hashed_password=get_password_hash("password"), role=UserRole.ANALYST),
-            User(email="partner@example.com", hashed_password=get_password_hash("password"), role=UserRole.PARTNER),
+            User(email="ad@g.com", hashed_password=get_password_hash("12345678"), role=UserRole.ADMIN),
+            User(email="a@g.com", hashed_password=get_password_hash("12345678"), role=UserRole.ANALYST),
+            User(email="p@g.com", hashed_password=get_password_hash("12345678"), role=UserRole.PARTNER),
         ]
 
         for user in users:
             session.add(user)
         
         session.commit()
-        print("Seeded users: admin@example.com, analyst@example.com, partner@example.com (password: password)")
+        print("Seeded users: ad@g.com (Admin), a@g.com (Analyst), p@g.com (Partner). Password: 12345678")
 
 if __name__ == "__main__":
     seed()
