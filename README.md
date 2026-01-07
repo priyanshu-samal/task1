@@ -11,6 +11,7 @@ The system manages the entire lifecycle of a deal—from initial **Sourcing** an
 The application differentiates users not just by UI elements, but by strict backend business logic.
 
 #### **Admin**
+**Credentials**: `ad@g.com` / `12345678`
 The administrative backbone of the firm.
 *   **Capabilities**: Full access to the pipeline. Exclusive ability to **delete deals** and manage data integrity.
 *   **Responsibility**: Overseeing system health and correcting errors.
@@ -19,6 +20,7 @@ The administrative backbone of the firm.
 *(Admin view showing the exclusive "Delete Deal" capability)*
 
 #### **Partner**
+**Credentials**: `p@g.com` / `12345678`
 The ultimate decision-maker.
 *   **Capabilities**: Can view all deals and memos.
 *   **Exclusive Power**: Only Partners (and Admins) can move a deal into the final **Invested** or **Passed** stages.
@@ -28,6 +30,7 @@ The ultimate decision-maker.
 *(Partner view showing the ability to finalize deals)*
 
 #### **Analyst**
+**Credentials**: `a@g.com` / `12345678`
 The deal sourcer and researcher.
 *   **Capabilities**: Creating new deals, moving them through early stages (Sourced -> Screen -> Diligence -> IC), and writing investment memos.
 *   **Restrictions**: **Cannot** commit capital (move to "Invested") or unilaterally reject deals (move to "Passed"). The system enforces this via API restrictions.
@@ -128,4 +131,5 @@ We have pre-configured 3 accounts to demonstrate the role-based hierarchy.
 | **Partner** | `p@g.com` | Full Access + **Invest/Pass**. |
 
 ---
-*Built with ❤️ for JanAssign.*
+---
+*Deal Flow Management System*
